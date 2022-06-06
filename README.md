@@ -16,7 +16,6 @@ Para que la evaluación del planificador sea lo más realista posible, se nos pi
 - Poder bloquear un proceso en cualquier momento.
 - Poder cargar (de alguna forma) múltiples procesos de un solo ingreso
 - Poder insertar procesos ya sea del S.O. como de usuario indicando:
-  - Tiempo total de ejecución
+    - Tiempo total de ejecución
     - Cada qué tiempo realiza una E/S (periódica sin modificación)
     - Tiempo en que espera por la E/S (puede ser diferente para cada proceso).
-
