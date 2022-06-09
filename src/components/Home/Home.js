@@ -1,32 +1,44 @@
 import React from "react";
-import { Formik } from "formik";
-import { Button, Typography, Input, Container } from "@mui/material";
 
 import useStyles from "./styles";
+import AddProcess from "../AddProcess/AddProcess";
+import ucuLogo from "../../assets/UCU_name.png";
+import { Typography } from "@mui/material";
+import { Container } from "@mui/system";
 
 const Home = () => {
   const classes = useStyles();
 
-  const handleSubmit = () => {
-    // console.log("name", name);
-    // console.log("processType", processType);
-  };
-
   return (
-    <div className={classes.container}>
-      <Typography className={classes.title}>Agregar proceso:</Typography>
-      <Formik
-        initialValues={{ name: "", processType: "" }}
-        onSubmit={handleSubmit}
-        enableReinitialize
+    <Container className={classes.container}>
+      <Typography
+        sx={{
+          fontSize: "20px",
+          fontWeight: "500",
+          color: "#041f55",
+          paddingBottom: "2%",
+        }}
       >
-        <Container>
-          <Input name="name" placeholder="Nombre" />
-          <Input name="processType" placeholder="Tipo proceso" />
-          <Button type="submit">Enviar</Button>
-        </Container>
-      </Formik>
-    </div>
+        Agregar procesos:
+      </Typography>
+      <AddProcess />
+      <div className={classes.footBar}>
+        <div className={classes.namesContainer}>
+          <Typography className={classes.text}>Carol Glass</Typography>
+          <Typography className={classes.text}>Faustina Lestrade</Typography>
+          <Typography className={classes.text}>Antonia Mescia</Typography>
+        </div>
+        <div className={classes.logoContainer}>
+          <div className={classes.textContainer}>
+            <Typography noWrap className={classes.text}>
+              Sistemas operativos
+            </Typography>
+          </div>
+
+          <img src={ucuLogo} alt="ucuLogo" style={{ maxHeight: "90%" }} />
+        </div>
+      </div>
+    </Container>
   );
 };
 
