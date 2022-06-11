@@ -10,18 +10,20 @@ const Home = () => {
   const classes = useStyles();
 
   return (
-    <Container className={classes.container}>
-      <Typography
-        sx={{
-          fontSize: "20px",
-          fontWeight: "500",
-          color: "#041f55",
-          paddingBottom: "2%",
-        }}
-      >
-        Agregar procesos:
-      </Typography>
-      <AddProcess />
+    <>
+      <Container className={classes.container}>
+        <Typography
+          sx={{
+            fontSize: "20px",
+            fontWeight: "500",
+            color: "#041f55",
+            paddingBottom: "2%",
+          }}
+        >
+          Agregar procesos:
+        </Typography>
+        <AddProcess />
+      </Container>
       <div className={classes.footBar}>
         <div className={classes.namesContainer}>
           <Typography className={classes.text}>Carol Glass</Typography>
@@ -34,11 +36,10 @@ const Home = () => {
               Sistemas operativos
             </Typography>
           </div>
-
           <img src={ucuLogo} alt="ucuLogo" style={{ maxHeight: "90%" }} />
         </div>
       </div>
-    </Container>
+    </>
   );
 };
 
