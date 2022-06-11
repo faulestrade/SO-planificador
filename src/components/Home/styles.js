@@ -7,6 +7,7 @@ const useStyles = makeStyles(() => ({
     overflow: "auto",
     justifyContent: "center",
     alignContent: "center",
+    textAlign: "-webkit-center",
   },
   footBar: {
     bottom: 20,
@@ -40,7 +41,7 @@ const useStyles = makeStyles(() => ({
   logoContainer: {
     display: "flex",
     flexDirection: "row",
-    paddingRight: "10%",
+    paddingRight: "2%",
     alignContent: "center",
   },
 }));
