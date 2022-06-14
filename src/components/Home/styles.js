@@ -3,15 +3,14 @@ import { makeStyles } from "@mui/styles";
 const useStyles = makeStyles(() => ({
   container: {
     display: "flex",
-    height: "100vh",
+    height: "90vh",
     overflow: "auto",
     justifyContent: "center",
     alignContent: "center",
     textAlign: "-webkit-center",
   },
+
   footBar: {
-    bottom: 20,
-    position: "absolute",
     width: "100%",
     height: "64px",
     maxHeight: "64px",
