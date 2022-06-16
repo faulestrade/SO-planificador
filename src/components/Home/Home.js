@@ -13,7 +13,7 @@ const Home = () => {
   const muliLevelArray = [[], [], [], []];
 
   const handleProcess = (values) => {
-    console.log("values", values);
+    console.log(values);
     // const process = {
     //   name: values.name,
     //   processType: values.processType,
@@ -32,7 +32,11 @@ const Home = () => {
         processType: "",
         startTime: 0,
         executionTime: 0,
+        timeAlreadyExecuted:0,
         userPriority: 0,
+        blockedTime:0,
+        whereIsBlocked:0,
+        isBlocked:false
       },
     ],
     onSubmit: handleProcess,

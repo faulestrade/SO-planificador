@@ -1,5 +1,14 @@
 import React from "react";
-import { Grid, TextField, MenuItem, Paper } from "@mui/material";
+import { useState } from "react";
+import {
+  Grid,
+  TextField,
+  MenuItem,
+  Paper,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+} from "@mui/material";
 
 import useStyles from "./styles";
 
@@ -11,6 +20,18 @@ const AddProcess = ({ value, setValues }) => {
     "Tiempo Real",
     "Sistema Operativo",
   ];
+
+  const [isChecked, setisChecked] = useState(false);
+
+  const handleCheck = (event) => {
+    console.log(isChecked, "1");
+    setisChecked((current) => !current);
+    console.log(isChecked, "2");
+    console.log(value.isBlocked,"1");
+    setValues({ ...value, isBlocked: isChecked });
+    console.log(value.isBlocked,"2");
+  };
+
 
   return (
     <Paper className={classes.container}>
@@ -100,6 +121,51 @@ const AddProcess = ({ value, setValues }) => {
             type="number"
           />
         </Grid>
+        <Grid item xs={10} md={10}>
+          <FormGroup>
+            <FormControlLabel
+              id="isBlocked"
+              name="isBlocked"
+              value={isChecked}
+              onChange={handleCheck}
+              control={<Checkbox />}
+              label="¿El proceso se bloquea?"
+            />
+          </FormGroup>
+        </Grid>
+        {isChecked? <><Grid item xs={10} md={10}>
+          <TextField
+            id="whereIsBlocked"
+            label="Se bloquea cada"
+            variant="outlined"
+            fullWidth
+            value={value.whereIsBlocked}
+            InputProps={{ inputProps: { min: 0, max: 10 } }}
+            name="whereIsBlocked"
+            onChange={(e) =>
+              setValues({ ...value, whereIsBlocked: e.target.value })
+            }
+            placeholder="Se bloquea cada"
+            type="number"
+          />
+        </Grid>
+        <Grid item xs={10} md={10}>
+        <TextField
+          id="blockedTime"
+          label="Tiempo de bloqueo"
+          variant="outlined"
+          fullWidth
+          value={value.blockedTime}
+          InputProps={{ inputProps: { min: 0, max: 10 } }}
+          name="blockedTime"
+          onChange={(e) =>
+            setValues({ ...value, blockedTime: e.target.value })
+          }
+          placeholder="Tiempo de bloqueo"
+          type="number"
+        />
+      </Grid></>:null}
+        
       </Grid>
     </Paper>
   );
