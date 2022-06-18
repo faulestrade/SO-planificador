@@ -24,14 +24,9 @@ const AddProcess = ({ value, setValues }) => {
   const [isChecked, setisChecked] = useState(false);
 
   const handleCheck = (event) => {
-    console.log(isChecked, "1");
+    setValues({ ...value, isBlocked: !isChecked });
     setisChecked((current) => !current);
-    console.log(isChecked, "2");
-    console.log(value.isBlocked,"1");
-    setValues({ ...value, isBlocked: isChecked });
-    console.log(value.isBlocked,"2");
   };
-
 
   return (
     <Paper className={classes.container}>
@@ -84,7 +79,9 @@ const AddProcess = ({ value, setValues }) => {
             value={value.startTime}
             InputProps={{ inputProps: { min: 0, max: 20 } }}
             name="startTime"
-            onChange={(e) => setValues({ ...value, startTime: e.target.value })}
+            onChange={(e) =>
+              setValues({ ...value, startTime: +e.target.value })
+            }
             placeholder="Tiempo de ejecución"
             type="number"
           />
@@ -99,7 +96,7 @@ const AddProcess = ({ value, setValues }) => {
             InputProps={{ inputProps: { min: 0, max: 20 } }}
             name="executionTime"
             onChange={(e) =>
-              setValues({ ...value, executionTime: e.target.value })
+              setValues({ ...value, executionTime: +e.target.value })
             }
             placeholder="Tiempo de ejecución"
             type="number"
@@ -115,7 +112,7 @@ const AddProcess = ({ value, setValues }) => {
             InputProps={{ inputProps: { min: 0, max: 10 } }}
             name="userPriority"
             onChange={(e) =>
-              setValues({ ...value, userPriority: e.target.value })
+              setValues({ ...value, userPriority: +e.target.value })
             }
             placeholder="Prioridad"
             type="number"
@@ -133,39 +130,42 @@ const AddProcess = ({ value, setValues }) => {
             />
           </FormGroup>
         </Grid>
-        {isChecked? <><Grid item xs={10} md={10}>
-          <TextField
-            id="whereIsBlocked"
-            label="Se bloquea cada"
-            variant="outlined"
-            fullWidth
-            value={value.whereIsBlocked}
-            InputProps={{ inputProps: { min: 0, max: 10 } }}
-            name="whereIsBlocked"
-            onChange={(e) =>
-              setValues({ ...value, whereIsBlocked: e.target.value })
-            }
-            placeholder="Se bloquea cada"
-            type="number"
-          />
-        </Grid>
-        <Grid item xs={10} md={10}>
-        <TextField
-          id="blockedTime"
-          label="Tiempo de bloqueo"
-          variant="outlined"
-          fullWidth
-          value={value.blockedTime}
-          InputProps={{ inputProps: { min: 0, max: 10 } }}
-          name="blockedTime"
-          onChange={(e) =>
-            setValues({ ...value, blockedTime: e.target.value })
-          }
-          placeholder="Tiempo de bloqueo"
-          type="number"
-        />
-      </Grid></>:null}
-        
+        {isChecked ? (
+          <>
+            <Grid item xs={10} md={10}>
+              <TextField
+                id="whereIsBlocked"
+                label="Se bloquea cada"
+                variant="outlined"
+                fullWidth
+                value={value.whereIsBlocked}
+                InputProps={{ inputProps: { min: 0, max: 10 } }}
+                name="whereIsBlocked"
+                onChange={(e) =>
+                  setValues({ ...value, whereIsBlocked: +e.target.value })
+                }
+                placeholder="Se bloquea cada"
+                type="number"
+              />
+            </Grid>
+            <Grid item xs={10} md={10}>
+              <TextField
+                id="blockedTime"
+                label="Tiempo de bloqueo"
+                variant="outlined"
+                fullWidth
+                value={value.blockedTime}
+                InputProps={{ inputProps: { min: 0, max: 10 } }}
+                name="blockedTime"
+                onChange={(e) =>
+                  setValues({ ...value, blockedTime: +e.target.value })
+                }
+                placeholder="Tiempo de bloqueo"
+                type="number"
+              />
+            </Grid>
+          </>
+        ) : null}
       </Grid>
     </Paper>
   );

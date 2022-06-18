@@ -1,64 +1,120 @@
-import React, { useState, useEffect } from "react";
+import { Button } from "@mui/material";
+import React, { useState, useEffect, useMemo } from "react";
+import { ProcessStatus } from "../../../Utils";
 
-const ProcessPlanner = (processArray1) => {
-  const [time, setTime] = useState(-1);
+const ProcessPlanner = ({ processArray }) => {
+  const [time, setTime] = useState();
   const [running, setRunning] = useState(false);
-  const [sortedArrayProcess, setsortedArrayProcess] = useState([]);
-
-  const processArray = [
-    {
-      name: "Proceso",
-      processType: "Tiempo real",
-      startTime: 0,
-      executionTime: 2,
-      userPriority: 3,
-    },
-    {
-      name: "Proceso2",
-      processType: "Batch",
-      startTime: 0,
-      executionTime: 4,
-      userPriority: 0,
-    },
-    {
-      name: "Proceso3",
-      processType: "Itercativo",
-      startTime: 2,
-      executionTime: 3,
-      userPriority: 4,
-    },
-  ];
-
+  const sortProcess = (arrayToSort) =>
+    arrayToSort.map((secondArray) =>
+      secondArray.sort((a, b) =>
+        a.status === ProcessStatus.ENDED || b.status === ProcessStatus.ENDED
+          ? -1
+          : b.userPriority - a.userPriority
+      )
+    );
+  const [sortedArrayProcess, setSortedArrayProcess] = useState();
+  const [renderItems, setRenderItems] = useState([]);
   //setInterval = Esta funcion tiene dos argumentos, el primero es lo que queres que ejecute y en el segundo el tiempo que tiene que esperar para hacerlo.
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      if (running) {
-        setTime((oldTime) => {
-          const newTime = oldTime + 1;
-          return newTime;
-        });
-      }
-    }, 1000);
-    return () => clearInterval(intervalId);
+    if (running) {
+      setSortedArrayProcess(sortProcess(processArray));
+      setTime(0);
+      setRenderItems([]);
+      const intervalId = setInterval(() => {
+        if (running) {
+          setTime((oldTime) => {
+            const newTime = oldTime + 1;
+            return newTime;
+          });
+        }
+      }, 1000);
+      return () => clearInterval(intervalId);
+    }
   }, [running]);
 
   useEffect(() => {
-    sortProcess();
-  }, [processArray[0].userPriority]);
+    if (sortedArrayProcess && time !== undefined) {
+      let newSortedArray = [...sortedArrayProcess].map((processArray) =>
+        processArray.map((process) => {
+          const processUpdated = { ...process };
+          const isProcessRunning =
+            processUpdated.status === ProcessStatus.RUNNING;
+          processUpdated.userPriority =
+            process.userPriority + (time % 3 === 0 && isProcessRunning ? 1 : 0);
 
-  const sortProcess = () => {
-    setsortedArrayProcess(
-      processArray.sort((a, b) => b.userPriority - a.userPriority)
+          return processUpdated;
+        })
+      );
+      newSortedArray = sortProcess(newSortedArray);
+      newSortedArray = runAProcess(newSortedArray);
+      newSortedArray = sortProcess(newSortedArray);
+      setSortedArrayProcess(newSortedArray);
+      setRenderItems([
+        ...renderItems,
+        <div>
+          <div>Tiempo actual: {time}</div>
+          {newSortedArray.map((processArray) =>
+            processArray.map((process) => (
+              <div>
+                <div>Nombre: {process.name}</div>
+                <div>Estado: {process.status}</div>
+              </div>
+            ))
+          )}
+          ----------------------------------------------------------------------------
+        </div>,
+      ]);
+    }
+  }, [time]);
+
+  const runAProcess = (sortedArray) => {
+    let aProcessIsRunning = false;
+    let boolean = false;
+    const result = [...sortedArray].map((processArray) =>
+      processArray.map((process) => {
+        const processUpdated = { ...process };
+        processUpdated.status =
+          process.timeExecuted === process.executionTime
+            ? ProcessStatus.ENDED
+            : processUpdated.status;
+        if (processUpdated.status !== ProcessStatus.ENDED) {
+          if (!aProcessIsRunning && process.startTime <= time) {
+            processUpdated.status = ProcessStatus.RUNNING;
+            aProcessIsRunning = true;
+          } else {
+            processUpdated.status =
+              process.startTime <= time ? ProcessStatus.READY : process.status;
+          }
+        }
+        if (processUpdated.status !== ProcessStatus.ENDED && !boolean) {
+          boolean = true;
+        }
+        const isProcessRunning =
+          processUpdated.status === ProcessStatus.RUNNING;
+        processUpdated.timeExecuted =
+          process.timeExecuted + (isProcessRunning ? 1 : 0);
+
+        return processUpdated;
+      })
     );
+    if (!boolean) {
+      setRunning(false);
+    }
+    return result;
   };
 
-  processArray.map((process) => {
-    if (time % 3 === 0) {
-      process.userPriority++;
-    }
-  });
-
-  return <></>;
+  return (
+    <div>
+      <Button variant="text" onClick={() => setRunning(true)}>
+        True
+      </Button>
+      <Button variant="text" onClick={() => setRunning(false)}>
+        False
+      </Button>
+      {renderItems}
+    </div>
+  );
 };
 
 export default ProcessPlanner;
