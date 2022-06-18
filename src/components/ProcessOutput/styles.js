@@ -1,0 +1,62 @@
+import { makeStyles } from "@mui/styles";
+
+const useStyles = makeStyles(() => ({
+  container: {
+    display: "flex",
+    height: "90vh",
+    overflow: "auto",
+    justifyContent: "center",
+    alignContent: "center",
+    textAlign: "-webkit-center",
+  },
+
+  footBar: {
+    width: "100%",
+    height: "64px",
+    maxHeight: "64px",
+    display: "flex",
+    flexDirection: "row",
+  },
+  title: {
+    fontSize: "24px",
+    fontWeight: "700",
+    color: "#041f55",
+  },
+  text: {
+    fontSize: "24px",
+    fontWeight: "500",
+    color: "#041f55",
+  },
+  textContainer: {
+    display: "flex",
+    alignSelf: "center",
+    paddingRight: "5%",
+  },
+  namesContainer: {
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+  },
+  logoContainer: {
+    display: "flex",
+    flexDirection: "row",
+    paddingRight: "2%",
+    alignContent: "center",
+  },
+  runningBox: {
+    backgroundColor: "#37a654",
+    width: 20,
+    height: 18
+  },
+  blockedBox: {
+    backgroundColor: "#ab3030",
+    width: 20,
+    height: 18
+  },
+  readyBox: {
+    backgroundColor: "#cfc040",
+    width: 20,
+    height: 18
+  },
+}));
+export default useStyles;
