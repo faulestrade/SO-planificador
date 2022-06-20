@@ -1,5 +1,13 @@
-import { Button } from "@mui/material";
-import React, { useState, useEffect, useMemo } from "react";
+import {
+  Button,
+  Table,
+  TableRow,
+  TableContainer,
+  TableCell,
+  TableHead,
+  TableBody,
+} from "@mui/material";
+import React, { useState, useEffect } from "react";
 import { ProcessStatus } from "../../../Utils";
 
 const ProcessPlanner = ({ processArray }) => {
@@ -8,13 +16,16 @@ const ProcessPlanner = ({ processArray }) => {
   const sortProcess = (arrayToSort) =>
     arrayToSort.map((secondArray) =>
       secondArray.sort((a, b) =>
-        a.status === ProcessStatus.ENDED || b.status === ProcessStatus.ENDED
+        a.status === ProcessStatus.ENDED && b.status === ProcessStatus.ENDED
+          ? 0
+          : a.status === ProcessStatus.ENDED || b.status === ProcessStatus.ENDED
           ? -1
           : b.userPriority - a.userPriority
       )
     );
   const [sortedArrayProcess, setSortedArrayProcess] = useState();
   const [renderItems, setRenderItems] = useState([]);
+
   //setInterval = Esta funcion tiene dos argumentos, el primero es lo que queres que ejecute y en el segundo el tiempo que tiene que esperar para hacerlo.
   useEffect(() => {
     if (running) {
@@ -51,21 +62,67 @@ const ProcessPlanner = ({ processArray }) => {
       setSortedArrayProcess(newSortedArray);
       setRenderItems([
         ...renderItems,
-        <div>
-          <div>Tiempo actual: {time}</div>
-          {newSortedArray.map((processArray) =>
-            processArray.map((process) => (
-              <div>
-                <div>Nombre: {process.name}</div>
-                <div>Estado: {process.status}</div>
-                <div>Tiempo ejecutado: {process.timeExecuted}</div>
-                <div>Tiempo Bloqueado: {process.timeBlocked}</div>
-                <div>Cuando es Bloqueado: {process.whenIsBlocked}</div>
+        <>
+          <TableRow container>
+            <TableCell style={{ textAlign: "center" }}>{time}</TableCell>
+            <TableCell style={{ textAlign: "center" }}>
+              <div
+                style={{
+                  flexDirection: "row",
+                }}
+              >
+                {newSortedArray.map((processArray) =>
+                  processArray
+                    .filter((process) => process.status === ProcessStatus.READY)
+                    .map((process) => <>Proceso: {process.name}</>)
+                )}
               </div>
-            ))
-          )}
-          ----------------------------------------------------------------------------
-        </div>,
+            </TableCell>
+            <TableCell style={{ textAlign: "center" }}>
+              <div
+                style={{
+                  flexDirection: "row",
+                }}
+              >
+                {newSortedArray.map((processArray) =>
+                  processArray
+                    .filter(
+                      (process) => process.status === ProcessStatus.RUNNING
+                    )
+                    .map((process) => <>Proceso: {process.name}</>)
+                )}
+              </div>
+            </TableCell>
+            <TableCell style={{ textAlign: "center" }}>
+              <div
+                style={{
+                  flexDirection: "row",
+                }}
+              >
+                {newSortedArray.map((processArray) =>
+                  processArray
+                    .filter(
+                      (process) => process.status === ProcessStatus.BLOCKED
+                    )
+                    .map((process) => <>Proceso: {process.name}</>)
+                )}
+              </div>
+            </TableCell>
+            <TableCell style={{ textAlign: "center" }}>
+              <div
+                style={{
+                  flexDirection: "row",
+                }}
+              >
+                {newSortedArray.map((processArray) =>
+                  processArray
+                    .filter((process) => process.status === ProcessStatus.ENDED)
+                    .map((process) => <div>Proceso: {process.name}</div>)
+                )}
+              </div>
+            </TableCell>
+          </TableRow>
+        </>,
       ]);
     }
   }, [time]);
@@ -98,7 +155,6 @@ const ProcessPlanner = ({ processArray }) => {
           processUpdated.timeExecuted % processUpdated.whenIsBlocked === 0
         ) {
           processUpdated.status = ProcessStatus.BLOCKED;
-          return processUpdated;
         }
 
         //Si el proceso esta en estado bloqueado se le suma 1 a el tiempo ya bloqueado
@@ -135,13 +191,67 @@ const ProcessPlanner = ({ processArray }) => {
 
   return (
     <div>
-      <Button variant="text" onClick={() => setRunning(true)}>
-        True
-      </Button>
-      <Button variant="text" onClick={() => setRunning(false)}>
-        False
-      </Button>
-      {renderItems}
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "1px",
+          margin: "20px",
+        }}
+      >
+        <div
+          style={{
+            fontSize: "24px",
+            fontWeight: "500",
+            color: "#041f55",
+          }}
+        >
+          Planificador con colas multi-nivel
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-evenly",
+          }}
+        >
+          <Button variant="text" onClick={() => setRunning(true)}>
+            Empezar a planificar
+          </Button>
+          <Button variant="text" onClick={() => setRunning(false)}>
+            Parar de planificar
+          </Button>
+        </div>
+      </div>
+      <TableContainer
+        style={{
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell style={{ textAlign: "center" }}>Tiempo</TableCell>
+              <TableCell style={{ textAlign: "center" }}>
+                Procesos Listos
+              </TableCell>
+              <TableCell style={{ textAlign: "center" }}>
+                Procesos Ejecutando
+              </TableCell>
+              <TableCell style={{ textAlign: "center" }}>
+                Procesos Bloqueados
+              </TableCell>
+              <TableCell style={{ textAlign: "center" }}>
+                Procesos Finalizados
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>{renderItems}</TableBody>
+        </Table>
+      </TableContainer>
     </div>
   );
 };
