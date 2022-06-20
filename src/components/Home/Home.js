@@ -4,24 +4,40 @@ import { toast } from "react-toastify";
 import useStyles from "./styles";
 import AddProcess from "../AddProcess/AddProcess";
 import ucuLogo from "../../assets/UCU_name.png";
-import { Button, Paper, Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import { Container } from "@mui/system";
-import { Formik, useFormik } from "formik";
+import { useFormik } from "formik";
+import ProcessPlanner from "../ProcessPlanner/Logic/ProcessPlanner";
+import { ProcessStatus } from "../../Utils";
 
 const Home = () => {
   const classes = useStyles();
-  const muliLevelArray = [[], [], [], []];
+  const [showPlanner, setshowPlanner] = useState(false);
+  const [multiLevelArray, setMultiLevelArray] = useState([[], [], [], []]);
 
-  const handleProcess = (values) => {
-    console.log(values);
-    // const process = {
-    //   name: values.name,
-    //   processType: values.processType,
-    //   startTime: values.startTime,
-    //   executionTime: values.executionTime,
-    //   userPriority: values.userPriority,
-    // };
-    // saveOnMultiLevel(process);
+  const saveOnMultiLevel = (processes) => {
+    const multiLevelArrayClone = [...multiLevelArray];
+    processes.map((process) => {
+      switch (process.processType) {
+        case "Sistema Operativo":
+          multiLevelArrayClone[0].push(process);
+          break;
+        case "Tiempo Real":
+          multiLevelArrayClone[1].push(process);
+          break;
+        case "Interactivo":
+          multiLevelArrayClone[2].push(process);
+          break;
+        case "Batch":
+          multiLevelArrayClone[3].push(process);
+          break;
+        default:
+          toast.error("Tipo de proceso incorrecto");
+          break;
+      }
+    });
+    setMultiLevelArray(multiLevelArrayClone);
+    setshowPlanner(true);
   };
 
   const { values, setValues, handleSubmit } = useFormik({
@@ -32,37 +48,19 @@ const Home = () => {
         processType: "",
         startTime: 0,
         executionTime: 0,
-        timeAlreadyExecuted:0,
         userPriority: 0,
-        blockedTime:0,
-        whereIsBlocked:0,
-        isBlocked:false
+        blockedTime: 0,
+        whenIsBlocked: 0,
+        isBlocked: false,
+        status: ProcessStatus.OPEN,
+        timeExecuted: 0,
+        timeBlocked: 0,
       },
     ],
-    onSubmit: handleProcess,
+    onSubmit: saveOnMultiLevel,
   });
 
-  const saveOnMultiLevel = (process) => {
-    switch (process.processType) {
-      case "Sistema Operativo":
-        muliLevelArray[0].push(process);
-        break;
-      case "Tiempo Real":
-        muliLevelArray[1].push(process);
-        break;
-      case "Interactivo":
-        muliLevelArray[2].push(process);
-        break;
-      case "Batch":
-        muliLevelArray[3].push(process);
-        break;
-      default:
-        toast.error("Tipo de proceso incorrecto");
-        break;
-    }
-  };
-
-  return (
+  return !showPlanner ? (
     <>
       <Container className={classes.container}>
         <Typography
@@ -97,7 +95,13 @@ const Home = () => {
                 processType: "",
                 startTime: 0,
                 executionTime: 0,
+                timeBlocked: 0,
                 userPriority: 0,
+                blockedTime: 0,
+                whenIsBlocked: 0,
+                isBlocked: false,
+                status: ProcessStatus.OPEN,
+                timeExecuted: 0,
               },
             ])
           }
@@ -128,6 +132,8 @@ const Home = () => {
         </div>
       </div>
     </>
+  ) : (
+    <ProcessPlanner processArray={multiLevelArray} />
   );
 };
 
