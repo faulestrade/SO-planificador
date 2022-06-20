@@ -42,7 +42,6 @@ const ProcessPlanner = ({ processArray }) => {
             processUpdated.status === ProcessStatus.RUNNING;
           processUpdated.userPriority =
             process.userPriority + (time % 3 === 0 && isProcessRunning ? 1 : 0);
-
           return processUpdated;
         })
       );
@@ -59,6 +58,9 @@ const ProcessPlanner = ({ processArray }) => {
               <div>
                 <div>Nombre: {process.name}</div>
                 <div>Estado: {process.status}</div>
+                <div>Tiempo ejecutado: {process.timeExecuted}</div>
+                <div>Tiempo Bloqueado: {process.timeBlocked}</div>
+                <div>Cuando es Bloqueado: {process.whenIsBlocked}</div>
               </div>
             ))
           )}
@@ -70,35 +72,62 @@ const ProcessPlanner = ({ processArray }) => {
 
   const runAProcess = (sortedArray) => {
     let aProcessIsRunning = false;
-    let boolean = false;
+    let thereIsAtLeastOneProcessNotEnded = false;
     const result = [...sortedArray].map((processArray) =>
       processArray.map((process) => {
         const processUpdated = { ...process };
-        processUpdated.status =
-          process.timeExecuted === process.executionTime
-            ? ProcessStatus.ENDED
-            : processUpdated.status;
-        if (processUpdated.status !== ProcessStatus.ENDED) {
-          if (!aProcessIsRunning && process.startTime <= time) {
-            processUpdated.status = ProcessStatus.RUNNING;
-            aProcessIsRunning = true;
-          } else {
-            processUpdated.status =
-              process.startTime <= time ? ProcessStatus.READY : process.status;
-          }
+
+        // Si el tiempo ejecutado es = al tiempo que ya ejecuto el proceso cambia a Finalizado
+        if (processUpdated.timeExecuted === processUpdated.executionTime) {
+          processUpdated.status = ProcessStatus.ENDED;
+          return processUpdated;
         }
-        if (processUpdated.status !== ProcessStatus.ENDED && !boolean) {
-          boolean = true;
+
+        // Si al menos hay un proceso que no esta terminado
+        if (
+          processUpdated.status !== ProcessStatus.ENDED &&
+          !thereIsAtLeastOneProcessNotEnded
+        ) {
+          thereIsAtLeastOneProcessNotEnded = true;
         }
-        const isProcessRunning =
-          processUpdated.status === ProcessStatus.RUNNING;
-        processUpdated.timeExecuted =
-          process.timeExecuted + (isProcessRunning ? 1 : 0);
+
+        // Si estaba ejecutando y tiene que bloquearse
+        if (
+          processUpdated.status === ProcessStatus.RUNNING &&
+          processUpdated.timeExecuted &&
+          processUpdated.timeExecuted % processUpdated.whenIsBlocked === 0
+        ) {
+          processUpdated.status = ProcessStatus.BLOCKED;
+          return processUpdated;
+        }
+
+        //Si el proceso esta en estado bloqueado se le suma 1 a el tiempo ya bloqueado
+        if (
+          processUpdated.status === ProcessStatus.BLOCKED &&
+          processUpdated.timeBlocked !== processUpdated.blockedTime
+        ) {
+          processUpdated.timeBlocked = processUpdated.timeBlocked + 1;
+          return processUpdated;
+        } else {
+          processUpdated.timeBlocked = 0;
+        }
+
+        // Si no hay un proceso corriendo entra al if y pone al proceso en Ejecutando, sino sigue al else y pone al proceso en listo
+        if (!aProcessIsRunning && processUpdated.startTime <= time) {
+          processUpdated.status = ProcessStatus.RUNNING;
+          aProcessIsRunning = true;
+          processUpdated.timeExecuted = processUpdated.timeExecuted + 1;
+        } else {
+          processUpdated.status =
+            processUpdated.startTime <= time
+              ? ProcessStatus.READY
+              : processUpdated.status;
+        }
 
         return processUpdated;
       })
     );
-    if (!boolean) {
+    if (!thereIsAtLeastOneProcessNotEnded) {
       setRunning(false);
     }
     return result;

@@ -93,7 +93,7 @@ const AddProcess = ({ value, setValues }) => {
             variant="outlined"
             fullWidth
             value={value.executionTime}
-            InputProps={{ inputProps: { min: 0, max: 20 } }}
+            InputProps={{ inputProps: { min: 1, max: 20 } }}
             name="executionTime"
             onChange={(e) =>
               setValues({ ...value, executionTime: +e.target.value })
@@ -109,7 +109,7 @@ const AddProcess = ({ value, setValues }) => {
             variant="outlined"
             fullWidth
             value={value.userPriority}
-            InputProps={{ inputProps: { min: 0, max: 10 } }}
+            InputProps={{ inputProps: { min: 1, max: 10 } }}
             name="userPriority"
             onChange={(e) =>
               setValues({ ...value, userPriority: +e.target.value })
@@ -134,15 +134,15 @@ const AddProcess = ({ value, setValues }) => {
           <>
             <Grid item xs={10} md={10}>
               <TextField
-                id="whereIsBlocked"
+                id="whenIsBlocked"
                 label="Se bloquea cada"
                 variant="outlined"
                 fullWidth
-                value={value.whereIsBlocked}
-                InputProps={{ inputProps: { min: 0, max: 10 } }}
-                name="whereIsBlocked"
+                value={value.whenIsBlocked}
+                InputProps={{ inputProps: { min: 1, max: 10 } }}
+                name="whenIsBlocked"
                 onChange={(e) =>
-                  setValues({ ...value, whereIsBlocked: +e.target.value })
+                  setValues({ ...value, whenIsBlocked: +e.target.value })
                 }
                 placeholder="Se bloquea cada"
                 type="number"
@@ -155,7 +155,7 @@ const AddProcess = ({ value, setValues }) => {
                 variant="outlined"
                 fullWidth
                 value={value.blockedTime}
-                InputProps={{ inputProps: { min: 0, max: 10 } }}
+                InputProps={{ inputProps: { min: 1, max: 10 } }}
                 name="blockedTime"
                 onChange={(e) =>
                   setValues({ ...value, blockedTime: +e.target.value })

@@ -1,5 +1,5 @@
 export const ProcessStatus = {
-  OPEN: "Open",
+  OPEN: "Registrado",
   READY: "Listo",
   RUNNING: "Ejecutando",
   BLOCKED: "Bloqueado",
